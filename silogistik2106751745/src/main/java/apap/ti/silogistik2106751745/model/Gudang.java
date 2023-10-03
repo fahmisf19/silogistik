@@ -18,7 +18,7 @@ public class Gudang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @NotNull
     @Size(max = 255)

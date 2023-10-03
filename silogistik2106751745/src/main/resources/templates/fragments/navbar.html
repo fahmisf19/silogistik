@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-white">
+    <a href="/" class="navbar-brand d-flex align-items-center fw-bold text-primary ms-3">
+        <svg width="50" height="50" viewBox="0 0 125 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="mt-2">
+            <path d="M71.5 73.4999L64.9995 69.8036L65.4408 96.0391L101 75.3203L62.4732 52.1792L22.5546 75.3202L59.3607 96.5702L59 69.8036L52 73.4999L51.8524 83.575L37 75.3202L61.9373 61.1074L87 75.3202L72 83.575L71.5 73.4999Z" fill="#4154F1"/>
+            <path d="M35.9378 43.298L42.3892 39.5166L19.4478 26.781L19.6113 67.9356L58.9155 46.1409L58.8341 -8.01086e-05L22.028 21.2499L45.3889 34.3209L45.6878 26.4105L37.0363 21.2451L51.6114 12.51L51.4514 41.2127L26.6113 55.8113L26.9625 38.6935L35.9378 43.298Z" fill="#4154F1"/>
+            <path d="M88.8962 43.298L82.4448 39.5166L105.386 26.781L105.223 67.9356L65.9185 46.1409L65.9999 -8.01086e-05L102.806 21.2499L79.4451 34.3209L79.1462 26.4105L87.7977 21.2451L73.2226 12.51L73.3826 41.2127L98.2226 55.8113L97.8715 38.6935L88.8962 43.298Z" fill="#4154F1"/>
+        </svg>
+        <span class="d-none d-lg-block">SILOGISTIK</span>
+    </a>
+    <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a th:classappend="${page == 'gudang'} ? 'active' : ''" class="nav-link dropdown-toggle ms-3" href="#" id="gudangDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Gudang
+                </a>
+                <div class="dropdown-menu" aria-labelledby="gudangDropdown">
+                    <a class="dropdown-item" th:href="@{/gudang}">Daftar Gudang</a>
+                    <a class="dropdown-item" th:href="@{/gudang/cari-barang}">Cari Barang</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a th:classappend="${page == 'barang'} ? 'active' : ''" th:href="@{/barang}" class="nav-link ms-3">Barang</a>
+            </li>
+            <li class="nav-item">
+                <a th:classappend="${page == 'permintaan-pengiriman'} ? 'active' : ''" th:href="@{/permintaan-pengiriman}" class="nav-link ms-3">Permintaan Pengiriman</a>
+            </li>
+            <li class="nav-item">
+                <a th:classappend="${page == 'bonus'} ? 'active' : ''" th:href="@{/bonus}" class="nav-link ms-3">Bonus</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+</body>
+
+</html>

@@ -60,4 +60,8 @@ public class PermintaanPengiriman {
     @Column(name = "waktu_permintaan")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime waktuPermintaan;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_karyawan", referencedColumnName = "id")
+    private Karyawan karyawan;
 }
