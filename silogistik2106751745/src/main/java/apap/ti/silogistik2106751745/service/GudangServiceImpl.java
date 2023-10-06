@@ -13,6 +13,9 @@ public class GudangServiceImpl implements GudangService {
     GudangDb gudangDb;
 
     @Override
+    public void saveGudang(Gudang gudang) { gudangDb.save(gudang); }
+
+    @Override
     public List<Gudang> getAllGudang() { return gudangDb.findAll(); }
 
     public Gudang getGudangById(Long id) {

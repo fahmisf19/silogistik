@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 public class BarangController {
 
@@ -41,6 +44,15 @@ public class BarangController {
     public String formAddBarang(Model model) {
         //Membuat DTO baru sebagai isian form pengguna
         var barangDTO = new CreateBarangRequestDTO();
+
+        List<String> listTipeBarang = Arrays.asList(
+                "Produk Elektronik",
+                "Pakaian & Aksesoris",
+                "Makanan & Minuman",
+                "Kosmetik",
+                "Perlengkapan Rumah"
+        );
+        model.addAttribute("listTipeBarang", listTipeBarang);
         model.addAttribute("barangDTO", barangDTO);
 
         // Atur parameter page ke 'barang' untuk menunjukkan bahwa halaman ini adalah halaman barang
@@ -58,14 +70,22 @@ public class BarangController {
             String error = bindingResult.getFieldError().getDefaultMessage();
 
             model.addAttribute("errorMessage", error);
+            List<String> listTipeBarang = Arrays.asList(
+                    "Produk Elektronik",
+                    "Pakaian & Aksesoris",
+                    "Makanan & Minuman",
+                    "Kosmetik",
+                    "Perlengkapan Rumah"
+            );
+            model.addAttribute("listTipeBarang", listTipeBarang);
+
             model.addAttribute("barangDTO", barangDTO);
 
-            // Atur parameter page ke 'buku' untuk menunjukkan bahwa halaman ini adalah halaman buku
+            // Atur parameter page ke 'barang' untuk menunjukkan bahwa halaman ini adalah halaman barang
             model.addAttribute("page", "barang");
 
             return "form-tambah-barang";
         }
-
         var barang = barangMapper.createBarangRequestDTOToBarang(barangDTO);
         //Memanggil Service addBarang
         barangService.saveBarang(barang);
@@ -94,25 +114,27 @@ public class BarangController {
     }
 
     @GetMapping("/barang/ubah/{sku}")
-    public String formUpdateBuku(@PathVariable("sku") String sku, Model model) {
+    public String formUpdateBarang(@PathVariable("sku") String sku, Model model) {
 
         // Mendapatkan barang melalui ID
         var barang = barangService.getBarangBySku(sku);
+        String tipeBarangString = barangService.tipeBarangToString(barang);
 
         //Memindahkan data barang ke DTO untuk selanjutnya diubah di form
         var barangDTO = barangMapper.barangToUpdateBarangRequestDTO(barang);
 
         // Menambahkan objek barangDTO ke model untuk digunakan dalam formulir
         model.addAttribute("barangDTO", barangDTO);
+        model.addAttribute("tipeBarangString", tipeBarangString);
 
         // Atur parameter page ke 'barang' untuk menunjukkan bahwa halaman ini adalah halaman barang
         model.addAttribute("page", "barang");
 
-        return "form-update-barang";
+        return "form-ubah-barang";
     }
 
-    @PostMapping("/buku/ubah/{sku}")
-    public String updateBuku(@Valid @ModelAttribute UpdateBarangRequestDTO barangDTO,
+    @PostMapping("/barang/ubah/{sku}")
+    public String updateBarang(@Valid @ModelAttribute UpdateBarangRequestDTO barangDTO,
                              @PathVariable("sku") String sku,
                              BindingResult bindingResult,
                              Model model) {

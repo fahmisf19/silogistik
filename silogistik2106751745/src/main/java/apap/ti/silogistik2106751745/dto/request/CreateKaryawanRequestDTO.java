@@ -1,22 +1,25 @@
 package apap.ti.silogistik2106751745.dto.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CreateBarangRequestDTO {
-    private String sku;
+public class CreateKaryawanRequestDTO {
     @NotNull
-    private Integer tipeBarang;
+    @Size(max = 30)
+    private String nama;
+
     @NotNull
-    private String merk;
+    private Integer jenisKelamin;
+
     @NotNull
-    private BigDecimal hargaBarang;
+    private Date tanggalLahir;
 }

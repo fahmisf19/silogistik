@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Daftar Barang</title>
 </head>
-<body>
-
+<body class="bg-light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="header">
+    <h1 class="text-center m-3">Daftar Barang</h1>
+</div>
+<div class="text-center mb-2">
+    <a type="button"
+       class="btn btn-md btn-primary"
+       th:href="@{barang/tambah}">+ Tambah Barang</a>
+</div>
+<div class="container-sm">
+    <div class="table-responsive-md">
+        <table class="table table-hover rounded rounded-3 overflow-hidden" style="color: #012970">
+            <thead class="table" style="background-color: #012970; color: #fff;">
+            <tr>
+                <th class="text-center" style="padding: 1rem 1rem;">#</th>
+                <th class="text-center" style="padding: 1rem 1rem;">SKU</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Merk</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Stok</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Harga</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Action</th>
+            </tr>
+            </thead>
+            <tbody class="table">
+            <tr th:each="barang, iterationStatus : ${listBarang}" class="text-center">
+                <td th:text="${iterationStatus.count}"></td>
+                <td th:text="${barang.sku}"></td>
+                <td th:text="${barang.merk}"></td>
+                <td th:text="1"></td>
+                <td th:text="'Rp'+${barang.hargaBarang}"></td>
+                <td>
+                    <a type="button"
+                       class="btn btn-md btn-primary"
+                       th:href="@{barang/{sku}(sku=${barang.sku})}">Detail</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

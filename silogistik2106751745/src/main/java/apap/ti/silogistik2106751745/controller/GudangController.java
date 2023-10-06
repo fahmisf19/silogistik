@@ -20,8 +20,8 @@ public class GudangController {
     BarangService barangService;
 //    @Autowired
 //    PermintaanPengirimanService permintaanPengirimanService;
-//    @Autowired
-//    KaryawanService karyawanService;
+    @Autowired
+    KaryawanService karyawanService;
     @Autowired
     GudangMapper gudangMapper;
 
@@ -30,13 +30,13 @@ public class GudangController {
         var gudangCount = gudangService.getCount();
         var barangCount = barangService.getCount();
 //        var permintaanPengirimanCount = permintaanPengirimanService.getCount();
-//        var karyawanCount = karyawanService.getCount();
+        var karyawanCount = karyawanService.getCount();
 
         // Add counts to the model
         model.addAttribute("gudangCount", gudangCount);
         model.addAttribute("barangCount", barangCount);
 //        model.addAttribute("permintaanPengirimanCount", permintaanPengirimanCount);
-//        model.addAttribute("karyawanCount", karyawanCount);
+        model.addAttribute("karyawanCount", karyawanCount);
 
         return "beranda";
     }
@@ -51,8 +51,8 @@ public class GudangController {
         return "daftar-gudang";
     }
 
-    @GetMapping("penerbit/{idGudang}")
-    public String detailPenerbit(@PathVariable("idPenerbit") Long idGudang, Model model) {
+    @GetMapping("gudang/{idGudang}")
+    public String detailGudang(@PathVariable("idGudang") Long idGudang, Model model) {
         var gudang = gudangService.getGudangById(idGudang);
 
         model.addAttribute("gudang", gudang);

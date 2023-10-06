@@ -28,7 +28,6 @@ public class Karyawan {
     private String nama;
 
     @NotNull
-    @Size(max = 1)
     @Column(name = "jenis_kelamin")
     private Integer jenisKelamin;
 

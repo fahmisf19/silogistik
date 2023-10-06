@@ -1,10 +1,10 @@
 package apap.ti.silogistik2106751745.repository;
 
-import apap.ti.silogistik2106751745.model.Barang;
+import apap.ti.silogistik2106751745.model.Gudang;
+import apap.ti.silogistik2106751745.model.Karyawan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BarangDb extends JpaRepository<Barang, String> {
-    Integer countByTipeBarang(Integer tipe);
+public interface KaryawanDb extends JpaRepository<Karyawan, Long> {
 }

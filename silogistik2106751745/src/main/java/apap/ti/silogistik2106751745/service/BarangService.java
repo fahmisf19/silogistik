@@ -11,4 +11,5 @@ public interface BarangService {
     Barang getBarangBySku(String sku);
     Barang updateBarang(Barang barang);
     long getCount();
+    String tipeBarangToString(Barang barang);
 }

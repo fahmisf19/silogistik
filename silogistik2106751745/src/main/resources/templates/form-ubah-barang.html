@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
+<head>
+    <meta charset="UTF-8" />
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Form Ubah Barang</title>
+</head>
+
+<body class="bg-light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2>Ubah Barang </h2>
+                <br>
+                <th:block th:if="${errorMessage != null}">
+                    <div class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+                    <br>
+                </th:block>
+
+                <form th:action="@{/barang/ubah/{sku}(sku=${sku})}" th:object="${barangDTO}" method="POST">
+                    SKU: <br>
+                    <input type="text" class="form-control" th:value="${sku}" th:field="*{sku}" readonly>
+                    <br><br>
+
+                    Merk Barang: <br>
+                    <input class="form-control" type="text" th:field="*{merk}" />
+                    <br><br>
+
+                    Tipe Barang: <br>
+                    <input type="text" class="form-control" th:value="${tipeBarangString}" readonly>
+                    <br><br>
+                    <input type="hidden" th:value="${tipeBarang}" th:field="*{tipeBarang}" />
+
+                    Harga: <br>
+                    <input required class="form-control" type="number" th:field="*{hargaBarang}" />
+                    <br><br>
+
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <a class="btn btn-primary" href="/">Home</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

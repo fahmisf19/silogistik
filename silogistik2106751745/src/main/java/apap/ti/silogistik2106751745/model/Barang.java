@@ -2,7 +2,6 @@ package apap.ti.silogistik2106751745.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ public class Barang {
     private String sku;
 
     @NotNull
-    @Size(max = 1)
     @Column(name = "tipe_barang", nullable = false)
     private Integer tipeBarang;
 

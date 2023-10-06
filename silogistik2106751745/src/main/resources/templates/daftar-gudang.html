@@ -8,5 +8,34 @@
 </head>
 <body class="bg-light">
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="header">
+    <h1 style="text-align: center; margin: 30px">Daftar Gudang</h1>
+</div>
+<div class="container-sm">
+    <div class="table-responsive-md">
+        <table class="table table-hover rounded rounded-3 overflow-hidden" style="color: #012970">
+            <thead class="table" style="background-color: #012970; color: #fff;">
+            <tr>
+                <th class="text-center" style="padding: 1rem 1rem;">#</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Nama</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Alamat Gudang</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Action</th>
+            </tr>
+            </thead>
+            <tbody class="table">
+            <tr th:each="gudang, iterationStatus : ${listGudang}" class="text-center">
+                <td th:text="${iterationStatus.count}"></td>
+                <td th:text="${gudang.nama}"></td>
+                <td th:text="${gudang.alamatGudang}"></td>
+                <td>
+                    <a type="button"
+                       class="btn btn-md btn-primary"
+                       th:href="@{gudang/{idGudang}(idGudang=${gudang.id})}">Detail</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
