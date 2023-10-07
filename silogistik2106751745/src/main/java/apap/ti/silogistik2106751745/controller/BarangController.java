@@ -1,9 +1,14 @@
 package apap.ti.silogistik2106751745.controller;
 
 import apap.ti.silogistik2106751745.dto.BarangMapper;
+import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
 import apap.ti.silogistik2106751745.dto.request.CreateBarangRequestDTO;
+import apap.ti.silogistik2106751745.dto.request.CreateGudangBarangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.UpdateBarangRequestDTO;
+import apap.ti.silogistik2106751745.model.Gudang;
+import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.service.BarangService;
+import apap.ti.silogistik2106751745.service.GudangBarangService;
 import apap.ti.silogistik2106751745.service.GudangService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class BarangController {
@@ -29,6 +35,15 @@ public class BarangController {
 
     @Autowired
     private GudangService gudangService;
+
+    @Autowired
+    GudangBarangMapper gudangBarangMapper;
+
+    @Autowired
+    GudangBarangService gudangBarangService;
+
+    @Autowired
+    GudangBarangDb gudangBarangDb;
 
     @GetMapping("/barang")
     public String listBarang(Model model) {
@@ -62,7 +77,7 @@ public class BarangController {
     }
 
     @PostMapping("barang/tambah")
-    public String addBuku(@Valid @ModelAttribute CreateBarangRequestDTO barangDTO,
+    public String addBarang(@Valid @ModelAttribute CreateBarangRequestDTO barangDTO,
                           BindingResult bindingResult,
                           Model model) {
 
@@ -105,8 +120,14 @@ public class BarangController {
     @GetMapping("barang/{sku}")
     public String detailBarang(@PathVariable("sku") String sku, Model model) {
         var barang = barangService.getBarangBySku(sku);
+        var listGudang = barang.getListGudangBarang();
+        var tipeBarang = barangService.tipeBarangToString(barang);
+        var totalStok = gudangBarangService.getTotalStok(sku);
 
         model.addAttribute("barang", barang);
+        model.addAttribute("listGudang", listGudang);
+        model.addAttribute("tipeBarang", tipeBarang);
+        model.addAttribute("totalStok", totalStok);
 
         model.addAttribute("page", "barang");
 

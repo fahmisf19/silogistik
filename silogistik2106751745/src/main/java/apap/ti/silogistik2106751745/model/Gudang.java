@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,4 +31,7 @@ public class Gudang {
     @Size(max = 255)
     @Column(name = "alamat_gudang", nullable = false)
     private String alamatGudang;
+
+    @OneToMany(mappedBy = "gudang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<GudangBarang> listGudangBarang;
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Restock Gudang</title>
+</head>
+<body class="bg-light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5"
+     style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
+    <div class="back-btn-div">
+        <a type="button" class="back-btn" href="javascript:history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" fill="currentColor" class="bi bi-arrow-left"
+                 viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="container-sm ">
+        <div class="header">
+            <h1 class="text-center m-3">Restock Gudang</h1>
+        </div>
+        <p th:text="'Nama Gudang:        '+${gudang.nama}"></p>
+        <p th:text="'Alamat Gudang:      '+${gudang.alamatGudang}"></p>
+
+        <form th:action="@{/gudang/{idGudang}/restock-barang(idGudang=${idGudang})}" th:object="${gudangDTO}"
+              method="POST">
+            <div class="container-fluid">
+                <div class="table-responsive-md">
+                    <div class="d-flex justify-content-end p-3">
+                        <button class="btn btn-primary" type="submit" name="addRow" style="text-align:right">+ Tambah
+                            Barang
+                        </button>
+                    </div>
+                    <table class="table table-hover rounded rounded-3 overflow-hidden"
+                           style="color: #012970">
+                        <thead class="table" style="background-color: #012970; color: #fff;">
+                        <tr>
+                            <th class="text-center" style="padding: 1rem 1rem;">#</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Barang</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Kuantitas</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table">
+                        <tr th:each="gudangBarang, iterationStatus : *{listGudangBarang}" class="text-center">
+                            <td th:text="${iterationStatus.count}"></td>
+                            <td>
+                                <select class="form-select custom-select me-2"
+                                        th:field="*{listGudangBarang[__${iterationStatus.index}__].barang.sku}">
+                                    <div th:each="barangExisting : ${listBarangExisting}">
+                                        <option th:value="${barangExisting.sku}"
+                                                th:text="${barangExisting.merk}"></option>
+                                    </div>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control w-100" type="text"
+                                       th:field="*{listGudangBarang[__${iterationStatus.index}__].stok}"/>
+                            </td>
+                            <input class="form-control" type="hidden"
+                                   th:field="*{listGudangBarang[__${iterationStatus.index}__].gudang}"
+                                   th:value="${idGudang}"/>
+                        </tr>
+
+                        <input class="form-control" type="hidden" th:field="*{id}" th:value="${idGudang}"/>
+                        <input class="form-control" type="hidden" th:field="*{nama}" th:value="${gudang.nama}"/>
+                        <input class="form-control" type="hidden" th:field="*{alamatGudang}"
+                               th:value="${gudang.alamatGudang}"/>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+    </form>
+
+</div>
+</body>
+</html>

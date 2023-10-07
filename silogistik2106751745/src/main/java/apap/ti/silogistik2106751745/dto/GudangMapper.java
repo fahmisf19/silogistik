@@ -2,6 +2,7 @@ package apap.ti.silogistik2106751745.dto;
 
 import apap.ti.silogistik2106751745.dto.request.CreateGudangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.UpdateBarangRequestDTO;
+import apap.ti.silogistik2106751745.dto.request.UpdateGudangRequestDTO;
 import apap.ti.silogistik2106751745.model.Barang;
 import apap.ti.silogistik2106751745.model.Gudang;
 import org.mapstruct.Mapper;
@@ -10,4 +11,8 @@ import org.mapstruct.Mapper;
 public interface GudangMapper {
 
     Gudang createGudangRequestDTOToGudang(CreateGudangRequestDTO createGudangRequestDTO);
+
+    Gudang updateGudangRequestDTOToGudang(UpdateGudangRequestDTO updateGudangRequestDTO);
+
+    UpdateGudangRequestDTO gudangToUpdateGudangRequestDTO(Gudang gudang);
 }

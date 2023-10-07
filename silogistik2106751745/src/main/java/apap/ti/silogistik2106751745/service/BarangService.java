@@ -8,6 +8,7 @@ public interface BarangService {
 
     void saveBarang(Barang barang);
     List<Barang> getAllBarang();
+    List<Barang> getAllBarangSort();
     Barang getBarangBySku(String sku);
     Barang updateBarang(Barang barang);
     long getCount();

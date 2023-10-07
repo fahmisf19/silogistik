@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,4 +31,7 @@ public class Barang {
     @NotNull
     @Column(name = "harga_barang", nullable = false)
     private BigDecimal hargaBarang;
+
+    @OneToMany(mappedBy = "barang", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<GudangBarang> listGudangBarang;
 }

@@ -11,17 +11,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "gudang_barang")
 public class GudangBarang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_gudang")
+    @JoinColumn(name = "id_gudang", referencedColumnName = "id")
     private Gudang gudang;
 
     @ManyToOne
-    @JoinColumn(name = "sku_barang")
+    @JoinColumn(name = "sku_barang", referencedColumnName = "sku")
     private Barang barang;
 
     @NotNull

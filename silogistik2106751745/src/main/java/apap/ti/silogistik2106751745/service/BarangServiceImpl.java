@@ -14,7 +14,7 @@ public class BarangServiceImpl implements BarangService {
 
     public void saveBarang(Barang barang) {
         Integer tipe = barang.getTipeBarang();
-        Integer count = barangDb.countByTipeBarang(tipe) + 1;
+        Long count = barangDb.count() + 1;
         String tipeBarangString = "";
         switch (tipe) {
             case 1:
@@ -37,6 +37,10 @@ public class BarangServiceImpl implements BarangService {
         barangDb.save(barang);
     }
     public List<Barang> getAllBarang() { return barangDb.findAll(); }
+
+    @Override
+    public List<Barang> getAllBarangSort() { return barangDb.findAllByOrderByMerkAsc(); }
+
     public Barang getBarangBySku(String sku) {
         for (Barang barang : getAllBarang()) {
             if (barang.getSku().equals(sku)) {

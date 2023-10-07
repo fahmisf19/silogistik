@@ -9,4 +9,5 @@ public interface GudangService {
     List<Gudang> getAllGudang();
     Gudang getGudangById(Long id);
     long getCount();
+    Gudang updateGudang(Gudang gudang);
 }

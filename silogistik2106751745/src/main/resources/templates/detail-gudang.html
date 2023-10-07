@@ -11,7 +11,7 @@
 <div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5"
      style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
     <div class="back-btn-div">
-        <a type="button" class="back-btn" th:href="@{/gudang}">
+        <a type="button" class="back-btn" href="javascript:history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
         </svg>
@@ -20,7 +20,10 @@
     <div class="container-sm ">
         <div class="top-section d-flex flex-row justify-content-between mb-5">
             <h3>Detail Gudang</h3>
-            <input class="btn btn-primary btn-reply" type="button" value="+ Restock Barang">
+
+            <a th:href="@{/gudang/{idGudang}/restock-barang(idGudang=${gudang.id})}">
+                <input class="btn btn-primary" type="button" value="+ Restock Barang">
+            </a>
         </div>
         <p th:text="'Nama Gudang:        '+${gudang.nama}"></p>
         <p th:text="'Alamat Gudang:      '+${gudang.alamatGudang}"></p>
@@ -28,7 +31,9 @@
         <h5 class="mt-5 mb-3">Daftar Barang Tersedia</h5>
         <div class="container-fluid">
             <div class="table-responsive-md">
-                <table class="table table-hover rounded rounded-3 overflow-hidden" style="color: #012970">
+                <table class="table table-hover rounded rounded-3 overflow-hidden"
+                       style="color: #012970"
+                       th:if="${not #lists.isEmpty(listBarang)}">
                     <thead class="table" style="background-color: #012970; color: #fff;">
                     <tr>
                         <th class="text-center" style="padding: 1rem 1rem;">#</th>
@@ -39,8 +44,21 @@
                     </tr>
                     </thead>
                     <tbody class="table">
+                    <tr th:each="index : ${#numbers.sequence(0, listBarang.size() - 1)}" class="text-center">
+                        <td th:text="${index+1}"></td>
+                        <td>
+                            <a th:href="@{/barang/{sku}(sku=${listBarang[index].barang.sku})}" class="text-decoration-none">
+                                <span th:text="${listBarang[index].barang.sku}"></span>
+                            </a>
+                        </td>
+                        <td th:text="${listBarang[index].barang.merk}"></td>
+                        <td th:text="${listBarang[index].stok}"></td>
+                        <td th:text="${listBarang[index].barang.hargaBarang}"></td>
+                    </tr>
                     </tbody>
                 </table>
+                <p th:unless="${not #lists.isEmpty(listBarang)}">Tidak ada barang dalam gudang ini.</p>
+
             </div>
         </div>
     </div>
