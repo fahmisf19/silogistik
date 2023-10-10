@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Success Cancel Permintaan Pengiriman</title>
+</head>
+
+<body class="bg.light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="text-center">
+                <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 45C34.9263 45 45 34.9265 45 22.5C45 10.0735 34.9263 0 22.5 0C10.0737 0 0 10.0735 0 22.5C0 34.9265 10.0737 45 22.5 45ZM6 26.0435L17 37L39 14.6812L33.7036 9L17 26.0435L11.2964 20.3623L6 26.0435Z" fill="#4154F1"/>
+                </svg>
+                <br>
+            </div>
+            <div class="text-center">
+                <h2 th:text="'Permintaan pengiriman dengan nomor pengiriman ' + ${nomorPengiriman} + ' berhasil dihapus.'"></h2>
+                <br><br>
+            </div>
+            <div class="text-center m-3">
+                <a class="btn btn-primary" href="/">Home</a>
+                <a class="btn btn-primary" th:href="@{/permintaan-pengiriman}">Lihat Permintaan Pengiriman</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

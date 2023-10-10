@@ -26,8 +26,8 @@ public class GudangController {
     GudangService gudangService;
     @Autowired
     BarangService barangService;
-//    @Autowired
-//    PermintaanPengirimanService permintaanPengirimanService;
+    @Autowired
+    PermintaanPengirimanService permintaanPengirimanService;
     @Autowired
     KaryawanService karyawanService;
     @Autowired
@@ -40,17 +40,18 @@ public class GudangController {
     GudangBarangDb gudangBarangDb;
 
 
+
     @GetMapping("/")
     public String beranda(Model model) {
         var gudangCount = gudangService.getCount();
         var barangCount = barangService.getCount();
-//        var permintaanPengirimanCount = permintaanPengirimanService.getCount();
+        var permintaanPengirimanCount = permintaanPengirimanService.getCount();
         var karyawanCount = karyawanService.getCount();
 
         // Add counts to the model
         model.addAttribute("gudangCount", gudangCount);
         model.addAttribute("barangCount", barangCount);
-//        model.addAttribute("permintaanPengirimanCount", permintaanPengirimanCount);
+        model.addAttribute("permintaanPengirimanCount", permintaanPengirimanCount);
         model.addAttribute("karyawanCount", karyawanCount);
 
         return "beranda";
@@ -107,7 +108,6 @@ public class GudangController {
 
         var gudangDTO = gudangMapper.gudangToUpdateGudangRequestDTO(gudang);
         gudangDTO.setListGudangBarang(new ArrayList<>());
-        gudangDTO.getListGudangBarang().add(new GudangBarang());
 
         model.addAttribute("gudangDTO", gudangDTO);
         model.addAttribute("idGudang", idGudang);

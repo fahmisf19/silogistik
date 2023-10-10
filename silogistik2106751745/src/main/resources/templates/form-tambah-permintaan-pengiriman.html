@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Buat Permintaan Pengiriman</title>
+</head>
+<body class="bg-light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5 mb-5"
+     style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
+    <div class="back-btn-div">
+        <a type="button" class="back-btn" href="javascript:history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" fill="currentColor" class="bi bi-arrow-left"
+                 viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="container-sm ">
+        <div class="header">
+            <h1 class="text-center m-3">Buat Permintaan Pengiriman</h1>
+            <br><br>
+        </div>
+        <form th:action="@{/permintaan-pengiriman/tambah}" th:object="${permintaanPengirimanDTO}"
+              method="POST">
+            <div class="container-fluid">
+                <div class="table-responsive-md">
+                    <div class="row">
+                        <div class="col-sm">
+                            Karyawan Bertugas: <br>
+                            <select class="form-select custom-select me-2"
+                                    th:field="*{karyawan.id}">
+                                <div th:each="karyawan : ${listKaryawan}">
+                                    <option th:value="${karyawan.id}"
+                                            th:text="${karyawan.nama}"></option>
+                                </div>
+                            </select>
+                            <br><br>
+                        </div >
+                        <div class="col-sm">
+                            Tanggal Pengiriman: <br>
+                            <input type="date" class="form-control bg-white" name="tanggalPengiriman" th:field="*{tanggalPengiriman}" placeholder="dd-mm-yyyy">
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            Nama Penerima: <br>
+                            <input class="form-control" type="text" th:field="*{namaPenerima}" />
+                            <br><br>
+                        </div>
+                        <div class="col-sm">
+                            Jenis Layanan: <br>
+                            <select class="form-select custom-select me-2" id="listJenisLayanan" name="listJenisLayanan" th:field="*{jenisLayanan}">
+                                <option th:each="jenisLayanan, iterStat : ${listJenisLayanan}"
+                                        th:value="${iterStat.count}" th:text="${jenisLayanan}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            Alamat Penerima: <br>
+                            <input class="form-control" type="text" th:field="*{alamatPenerima}" />
+                            <br><br>
+                        </div>
+                        <div class="col-sm">
+                            Biaya Pengiriman: <br>
+                            <input class="form-control" type="text" th:field="*{biayaPengiriman}" />
+                            <br><br>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end p-3">
+                        <button class="btn btn-primary" type="submit" name="addRow" style="text-align:right">+ Tambah
+                            Barang
+                        </button>
+                    </div>
+                    <table class="table table-hover rounded rounded-3 overflow-hidden"
+                           style="color: #012970">
+                        <thead class="table" style="background-color: #012970; color: #fff;">
+                        <tr>
+                            <th class="text-center" style="padding: 1rem 1rem;">#</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Barang</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Kuantitas</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table">
+                        <tr th:each="permintaanPengirimanBarang, iterationStatus : *{listPermintaanPengirimanBarang}" class="text-center">
+                            <td th:text="${iterationStatus.count}"></td>
+                            <td>
+                                <select class="form-select custom-select me-2"
+                                        th:field="*{listPermintaanPengirimanBarang[__${iterationStatus.index}__].barang.sku}">
+                                    <div th:each="barang : ${listBarang}">
+                                        <option th:value="${barang.sku}"
+                                                th:text="${barang.merk}"></option>
+                                    </div>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control w-100" type="text"
+                                       th:field="*{listPermintaanPengirimanBarang[__${iterationStatus.index}__].kuantitasPengiriman}"/>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>

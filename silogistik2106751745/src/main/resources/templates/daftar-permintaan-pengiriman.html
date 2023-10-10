@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-    <title>Daftar Barang</title>
+    <title>Daftar Permintaan Pengiriman</title>
 </head>
 <body class="bg-light">
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 <div class="header">
-    <h1 class="text-center m-3">Daftar Barang</h1>
+    <h1 style="text-align: center; margin: 30px">Daftar Permintaan Pengiriman</h1>
 </div>
 <div class="text-center mb-2">
     <a type="button"
        class="btn btn-md btn-primary"
-       th:href="@{barang/tambah}">+ Tambah Barang</a>
+       th:href="@{/permintaan-pengiriman/tambah}">+ Tambah Permintaan Pengiriman</a>
 </div>
 <div class="container-sm">
     <div class="table-responsive-md"
@@ -23,24 +23,26 @@
             <thead class="table" style="background-color: #012970; color: #fff;">
             <tr>
                 <th class="text-center" style="padding: 1rem 1rem;">#</th>
-                <th class="text-center" style="padding: 1rem 1rem;">SKU</th>
-                <th class="text-center" style="padding: 1rem 1rem;">Merk</th>
-                <th class="text-center" style="padding: 1rem 1rem;">Stok</th>
-                <th class="text-center" style="padding: 1rem 1rem;">Harga</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Waktu Permintaan</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Nomor Pengiriman</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Nama Penerima</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Alamat Penerima</th>
+                <th class="text-center" style="padding: 1rem 1rem;">Tanggal Pengiriman</th>
                 <th class="text-center" style="padding: 1rem 1rem;">Action</th>
             </tr>
             </thead>
             <tbody class="table">
-            <tr th:each="barang, iterationStatus : ${listBarang}" class="text-center">
+            <tr th:each="permintaanPengiriman, iterationStatus : ${listPermintaanPengiriman}" class="text-center">
                 <td th:text="${iterationStatus.count}"></td>
-                <td th:text="${barang.sku}"></td>
-                <td th:text="${barang.merk}"></td>
-                <td th:text="${totalStok.get(iterationStatus.count-1)}"></td>
-                <td th:text="'Rp'+${barang.hargaBarang}"></td>
+                <td th:text="${permintaanPengiriman.waktuPermintaan}"></td>
+                <td th:text="${permintaanPengiriman.nomorPengiriman}"></td>
+                <td th:text="${permintaanPengiriman.namaPenerima}"></td>
+                <td th:text="${permintaanPengiriman.alamatPenerima}"></td>
+                <td th:text="${permintaanPengiriman.tanggalPengiriman}"></td>
                 <td>
                     <a type="button"
                        class="btn btn-md btn-primary"
-                       th:href="@{barang/{sku}(sku=${barang.sku})}">Detail</a>
+                       th:href="@{permintaan-pengiriman/{idPermintaanPengiriman}(idPermintaanPengiriman=${permintaanPengiriman.id})}">Detail</a>
                 </td>
             </tr>
             </tbody>

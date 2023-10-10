@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Detail Permintaan Pengiriman</title>
+</head>
+<body class="bg-light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5 mb-5"
+     style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
+    <div class="back-btn-div">
+        <a type="button" class="back-btn" href="javascript:history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="container-sm ">
+        <div class="top-section d-flex flex-row justify-content-between mb-5">
+            <h3>Detail Permintaan Pengiriman</h3>
+
+            <a th:href="@{/permintaan-pengiriman/{idPermintaanPengiriman}/cancel(idPermintaanPengiriman=${permintaanPengiriman.id})}">
+                <input class="btn btn-danger" type="button" value="Cancel Pengiriman">
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>No. Permintaan Pengiriman</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${permintaanPengiriman.nomorPengiriman}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Waktu Permintaan</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${waktuPermintaan}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Karyawan Bertugas</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${permintaanPengiriman.karyawan.nama}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Waktu Pengiriman</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${tanggalPengiriman}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Nama Penerima</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${permintaanPengiriman.namaPenerima}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Alamat Penerima</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${permintaanPengiriman.alamatPenerima}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Jenis layanan</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${type}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Biaya Pengiriman</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${permintaanPengiriman.biayaPengiriman}"></div>
+            <div class="col-sm"></div>
+        </div>
+
+        <h5 class="mt-5 mb-3">Daftar Barang Dipesan</h5>
+        <div class="container-fluid">
+            <div class="table-responsive-md">
+                <table class="table table-hover rounded rounded-3 overflow-hidden"
+                       style="color: #012970"
+                       th:if="${not #lists.isEmpty(listPermintaanPengirimanBarang)}">
+                    <thead class="table" style="background-color: #012970; color: #fff;">
+                    <tr>
+                        <th class="text-center" style="padding: 1rem 1rem;">#</th>
+                        <th class="text-center" style="padding: 1rem 1rem;">SKU</th>
+                        <th class="text-center" style="padding: 1rem 1rem;">Merk</th>
+                        <th class="text-center" style="padding: 1rem 1rem;">Kuantitas Pesanan</th>
+                        <th class="text-center" style="padding: 1rem 1rem;">Total Harga</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table">
+                    <tr th:each="index : ${#numbers.sequence(0, listPermintaanPengirimanBarang.size() - 1)}" class="text-center">
+                        <td th:text="${index+1}"></td>
+                        <td>
+                            <a th:href="@{/barang/{sku}(sku=${listPermintaanPengirimanBarang[index].barang.sku})}" class="text-decoration-none">
+                                <span th:text="${listPermintaanPengirimanBarang[index].barang.sku}"></span>
+                            </a>
+                        </td>
+                        <td th:text="${listPermintaanPengirimanBarang[index].barang.merk}"></td>
+                        <td th:text="${listPermintaanPengirimanBarang[index].kuantitasPengiriman}"></td>
+                        <td th:text="${listPermintaanPengirimanBarang[index].barang.hargaBarang*listPermintaanPengirimanBarang[index].kuantitasPengiriman}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:unless="${not #lists.isEmpty(listPermintaanPengirimanBarang)}">Tidak ada barang dalam gudang ini.</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

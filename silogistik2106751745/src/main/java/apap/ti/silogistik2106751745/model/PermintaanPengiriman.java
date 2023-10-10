@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,7 +26,6 @@ public class PermintaanPengiriman {
     private Long id;
 
     @NotNull
-    @Size(max =16)
     @Column(name = "nomor_pengiriman")
     private String nomorPengiriman;
 
@@ -34,16 +34,15 @@ public class PermintaanPengiriman {
     private Boolean isCancelled;
 
     @NotNull
-    @Size(max = 255)
     @Column(name = "nama_penerima")
     private String namaPenerima;
 
     @NotNull
-    @Size(max = 255)
     @Column(name = "alamat_penerima")
     private String alamatPenerima;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "tanggal_pengiriman")
     private Date tanggalPengiriman;
 
@@ -52,16 +51,17 @@ public class PermintaanPengiriman {
     private Integer biayaPengiriman;
 
     @NotNull
-    @Size(max = 1)
     @Column(name = "jenis_layanan")
     private Integer jenisLayanan;
 
     @NotNull
     @Column(name = "waktu_permintaan")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime waktuPermintaan;
+    private Date waktuPermintaan;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_karyawan", referencedColumnName = "id")
     private Karyawan karyawan;
+
+    @OneToMany(mappedBy = "permintaanPengiriman", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PermintaanPengirimanBarang> listPermintaanPengirimanBarang;
 }

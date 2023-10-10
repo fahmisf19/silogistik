@@ -1,19 +1,9 @@
 package apap.ti.silogistik2106751745;
 
-import apap.ti.silogistik2106751745.dto.BarangMapper;
-import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
-import apap.ti.silogistik2106751745.dto.GudangMapper;
-import apap.ti.silogistik2106751745.dto.KaryawanMapper;
-import apap.ti.silogistik2106751745.dto.request.CreateBarangRequestDTO;
-import apap.ti.silogistik2106751745.dto.request.CreateGudangBarangRequestDTO;
-import apap.ti.silogistik2106751745.dto.request.CreateGudangRequestDTO;
-import apap.ti.silogistik2106751745.dto.request.CreateKaryawanRequestDTO;
+import apap.ti.silogistik2106751745.dto.*;
+import apap.ti.silogistik2106751745.dto.request.*;
 import apap.ti.silogistik2106751745.repository.BarangDb;
-import apap.ti.silogistik2106751745.repository.GudangBarangDb;
-import apap.ti.silogistik2106751745.service.BarangService;
-import apap.ti.silogistik2106751745.service.GudangBarangService;
-import apap.ti.silogistik2106751745.service.GudangService;
-import apap.ti.silogistik2106751745.service.KaryawanService;
+import apap.ti.silogistik2106751745.service.*;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
@@ -22,9 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SpringBootApplication
 public class Silogistik2106751745Application {
@@ -42,8 +31,10 @@ public class Silogistik2106751745Application {
 						  KaryawanMapper karyawanMapper,
 						  BarangMapper barangMapper,
 						  BarangDb barangDb,
-						  GudangBarangMapper gudangBarangMapper,
-						  GudangBarangService gudangBarangService) {
+						  PermintaanPengirimanMapper permintaanPengirimanMapper,
+						  PermintaanPengirimanService permintaanPengirimanService,
+						  PermintaanPengirimanBarangMapper permintaanPengirimanBarangMapper,
+						  PermintaanPengirimanBarangService permintaanPengirimanBarangService) {
 		return args -> {
 			var faker = new Faker(new Locale("in-ID"));
 
@@ -91,7 +82,6 @@ public class Silogistik2106751745Application {
 			barangDTO.setSku(tipeBarangString + (barangDb.count()+1));
 			barangDTO.setListGudangBarang(new ArrayList<>());
 
-
 			var gudang = gudangMapper.createGudangRequestDTOToGudang(gudangDTO);
 			gudangService.saveGudang(gudang);
 
@@ -101,6 +91,60 @@ public class Silogistik2106751745Application {
 			var barang = barangMapper.createBarangRequestDTOToBarang(barangDTO);
 			barangService.saveBarang(barang);
 
+			var permintaanPengirimanDTO = new CreatePermintaanPengirimanRequestDTO();
+
+			// Generate a random service type (1 = SAM, 2 = KIL, 3 = REG, 4 = HEM)
+			int serviceType = faker.random().nextInt(1, 4);
+			List<String> listJenisLayanan = Arrays.asList(
+					"SAM",
+					"KIL",
+					"REG",
+					"HEM"
+			);
+
+			Date startDate = new Date();  // You can set your own start date here
+			Date endDate = new Date();    // You can set your own end date here
+
+			// Calculate the range in milliseconds
+			long range = endDate.getTime() - startDate.getTime();
+
+			// Generate a random timestamp within the range
+			long randomTimestamp = (long) (Math.random() * range) + startDate.getTime();
+
+			// Create a Date object from the random timestamp
+			Date randomDate = new Date(randomTimestamp);
+
+			permintaanPengirimanDTO.setIsCancelled(false);
+			permintaanPengirimanDTO.setNamaPenerima(faker.name().fullName());
+			permintaanPengirimanDTO.setAlamatPenerima(faker.address().streetAddress() + ", " + faker.address().cityName());
+			permintaanPengirimanDTO.setTanggalPengiriman(randomDate);
+			permintaanPengirimanDTO.setBiayaPengiriman((int) faker.number().randomDouble(2, 1000, 100000));
+			permintaanPengirimanDTO.setJenisLayanan(serviceType);
+
+			permintaanPengirimanDTO.setWaktuPermintaan(new Date());
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+			Date waktuPermintaan = permintaanPengirimanDTO.getWaktuPermintaan();
+			String kodeWaktu = timeFormat.format(waktuPermintaan);
+			String shipmentNumber = "REQXX"  + listJenisLayanan.get(serviceType-1) + kodeWaktu;
+			permintaanPengirimanDTO.setNomorPengiriman(shipmentNumber);
+			permintaanPengirimanDTO.setKaryawan(karyawan);
+
+			var permintaanPengiriman = permintaanPengirimanMapper.createPermintaanPengirimanRequestDTOToPermintaanPengiriman(permintaanPengirimanDTO);
+			permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
+
+			var permintaanPengirimanBarangDTO = new CreatePermintaanPengirimanBarangRequestDTO();
+			permintaanPengirimanBarangDTO.setPermintaanPengiriman(permintaanPengiriman);
+			permintaanPengirimanBarangDTO.setBarang(barang);
+			permintaanPengirimanBarangDTO.setKuantitasPengiriman(2);
+
+			var permintaanPengirimanBarang = permintaanPengirimanBarangMapper.createPermintaanPengirimanBarangRequestDTOToPermintaanPengirimanBarang(permintaanPengirimanBarangDTO);
+			permintaanPengirimanBarangService.savePermintaanPengirimanBarang(permintaanPengirimanBarang);
+
+			var totalKuantitas = permintaanPengirimanBarangService.getTotalKuantitasByPermintaanPengirimanId(permintaanPengiriman.getId());
+
+			permintaanPengiriman = permintaanPengirimanService.getPermintaanPengirimanById(permintaanPengiriman.getId());
+			permintaanPengiriman.setNomorPengiriman(permintaanPengiriman.getNomorPengiriman().replace("XX", String.format("%02d", totalKuantitas)));
+			permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
 		};
 	}
 }

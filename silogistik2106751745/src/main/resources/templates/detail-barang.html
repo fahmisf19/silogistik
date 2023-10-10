@@ -24,11 +24,41 @@
                 <input class="btn btn-primary" type="button" value="Ubah Detail Barang">
             </a>
         </div>
-        <p th:text="'Merk       :        '+${barang.merk}"></p>
-        <p th:text="'SKU        :        '+${barang.sku}"></p>
-        <p th:text="'Tipe Barang:        '+${tipeBarang}"></p>
-        <p th:text="'Total Stok :        '+${totalStok}"></p>
-        <p th:text="'Harga      :        '+${barang.hargaBarang}"></p>
+        <div class="row">
+            <div class="col-sm">
+                <p>Merk</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${barang.merk}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>SKU</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${barang.sku}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Tipe Barang</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${tipeBarang}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Total Stok</p>
+            </div>
+            <div class="col-6" th:text="': ' + (${totalStok} != null ? ${totalStok} : 0)"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Harga</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${barang.hargaBarang}"></div>
+            <div class="col-sm"></div>
+        </div>
 
         <h5 class="mt-5 mb-3">Daftar Gudang</h5>
         <div class="container-fluid">

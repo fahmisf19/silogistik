@@ -25,8 +25,20 @@
                 <input class="btn btn-primary" type="button" value="+ Restock Barang">
             </a>
         </div>
-        <p th:text="'Nama Gudang:        '+${gudang.nama}"></p>
-        <p th:text="'Alamat Gudang:      '+${gudang.alamatGudang}"></p>
+        <div class="row">
+            <div class="col-sm">
+                <p>Nama Gudang</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${gudang.nama}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Alamat Gudang</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${gudang.alamatGudang}"></div>
+            <div class="col-sm"></div>
+        </div>
 
         <h5 class="mt-5 mb-3">Daftar Barang Tersedia</h5>
         <div class="container-fluid">

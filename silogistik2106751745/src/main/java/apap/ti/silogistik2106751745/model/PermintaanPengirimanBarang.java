@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "permintaan_pengiriman_barang")
 public class PermintaanPengirimanBarang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

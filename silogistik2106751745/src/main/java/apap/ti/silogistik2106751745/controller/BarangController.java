@@ -5,6 +5,7 @@ import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
 import apap.ti.silogistik2106751745.dto.request.CreateBarangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.CreateGudangBarangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.UpdateBarangRequestDTO;
+import apap.ti.silogistik2106751745.model.Barang;
 import apap.ti.silogistik2106751745.model.Gudang;
 import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.service.BarangService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,14 +50,22 @@ public class BarangController {
     @GetMapping("/barang")
     public String listBarang(Model model) {
         var listBarang = barangService.getAllBarang();
+        List<Integer> totalStok = new ArrayList<>();
+
+        for (int i = 0; i < listBarang.size(); i++) {
+            Integer temp =  gudangBarangService.getTotalStok(listBarang.get(i).getSku());
+            if (temp == null) { temp = 0; }
+            totalStok.add(temp);
+        }
 
         model.addAttribute("listBarang", listBarang);
+        model.addAttribute("totalStok", totalStok);
         model.addAttribute("page", "barang");
 
         return "daftar-barang";
     }
 
-    @GetMapping("barang/tambah")
+    @GetMapping("/barang/tambah")
     public String formAddBarang(Model model) {
         //Membuat DTO baru sebagai isian form pengguna
         var barangDTO = new CreateBarangRequestDTO();
@@ -76,7 +86,7 @@ public class BarangController {
         return "form-tambah-barang";
     }
 
-    @PostMapping("barang/tambah")
+    @PostMapping("/barang/tambah")
     public String addBarang(@Valid @ModelAttribute CreateBarangRequestDTO barangDTO,
                           BindingResult bindingResult,
                           Model model) {
@@ -117,7 +127,7 @@ public class BarangController {
         return "success-tambah-barang";
     }
 
-    @GetMapping("barang/{sku}")
+    @GetMapping("/barang/{sku}")
     public String detailBarang(@PathVariable("sku") String sku, Model model) {
         var barang = barangService.getBarangBySku(sku);
         var listGudang = barang.getListGudangBarang();

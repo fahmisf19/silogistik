@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-    <title>Restock Gudang</title>
+    <title>Restock Barang</title>
 </head>
 <body class="bg-light">
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
-<div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5"
+<div class="container-md d-flex flex-row p-5 bg-white rounded-3 mt-5 mb-5"
      style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
     <div class="back-btn-div">
         <a type="button" class="back-btn" href="javascript:history.back()">
@@ -21,10 +21,23 @@
     </div>
     <div class="container-sm ">
         <div class="header">
-            <h1 class="text-center m-3">Restock Gudang</h1>
+            <h1 class="text-center m-3">Restock Barang</h1>
+            <br>
         </div>
-        <p th:text="'Nama Gudang:        '+${gudang.nama}"></p>
-        <p th:text="'Alamat Gudang:      '+${gudang.alamatGudang}"></p>
+        <div class="row">
+            <div class="col-sm">
+                <p>Nama Gudang</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${gudang.nama}"></div>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Alamat Gudang</p>
+            </div>
+            <div class="col-6" th:text="': ' + ${gudang.alamatGudang}"></div>
+            <div class="col-sm"></div>
+        </div>
 
         <form th:action="@{/gudang/{idGudang}/restock-barang(idGudang=${idGudang})}" th:object="${gudangDTO}"
               method="POST">
