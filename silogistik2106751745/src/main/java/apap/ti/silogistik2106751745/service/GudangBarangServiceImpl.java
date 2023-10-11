@@ -19,4 +19,9 @@ public class GudangBarangServiceImpl implements GudangBarangService {
 
     @Override
     public Integer getTotalStok(String skuBarang) { return gudangBarangDb.findTotalStokByBarangSku(skuBarang); }
+
+    @Override
+    public GudangBarang getGudangBarangByIdGudangBarangSku(Long idGudang, String barangSku) {
+        return gudangBarangDb.findGudangBarangByGudangIdBarangSku(idGudang, barangSku);
+    }
 }

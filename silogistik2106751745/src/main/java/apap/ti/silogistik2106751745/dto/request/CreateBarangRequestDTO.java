@@ -1,6 +1,8 @@
 package apap.ti.silogistik2106751745.dto.request;
 
 import apap.ti.silogistik2106751745.model.GudangBarang;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,9 +19,9 @@ public class CreateBarangRequestDTO {
     private String sku;
     @NotNull
     private Integer tipeBarang;
-    @NotNull
+    @NotBlank(message = "Merk barang tidak boleh kosong!")
     private String merk;
-    @NotNull
+    @Min(value = 1, message = "Harga harus positif!")
     private BigDecimal hargaBarang;
     private List<GudangBarang> listGudangBarang;
 }

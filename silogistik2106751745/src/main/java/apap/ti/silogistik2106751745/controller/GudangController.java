@@ -2,22 +2,21 @@ package apap.ti.silogistik2106751745.controller;
 
 import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
 import apap.ti.silogistik2106751745.dto.GudangMapper;
-import apap.ti.silogistik2106751745.dto.request.CreateGudangBarangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.UpdateGudangRequestDTO;
-import apap.ti.silogistik2106751745.model.Barang;
-import apap.ti.silogistik2106751745.model.Gudang;
 import apap.ti.silogistik2106751745.model.GudangBarang;
-import apap.ti.silogistik2106751745.model.PermintaanPengiriman;
 import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.service.*;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -107,7 +106,6 @@ public class GudangController {
         model.addAttribute("gudang", gudang);
 
         var gudangDTO = gudangMapper.gudangToUpdateGudangRequestDTO(gudang);
-        gudangDTO.setListGudangBarang(new ArrayList<>());
 
         model.addAttribute("gudangDTO", gudangDTO);
         model.addAttribute("idGudang", idGudang);
@@ -147,17 +145,78 @@ public class GudangController {
         return "form-restock-barang";
     }
 
+    @PostMapping(value = "/gudang/{idGudang}/restock-barang", params = {"deleteRow"})
+    public String deleteRow(
+            @PathVariable("idGudang") Long idGudang,
+            @ModelAttribute UpdateGudangRequestDTO gudangDTO,
+            @RequestParam("deleteRow") int row,
+            Model model
+    ) {
+        var gudang = gudangService.getGudangById(idGudang);
+        model.addAttribute("gudang", gudang);
+        gudangDTO.getListGudangBarang().remove(row);
+        model.addAttribute("gudangDTO", gudangDTO);
+        model.addAttribute("idGudang", idGudang);
+
+        // Kirim list barang untuk menjadi pilihan pada dropdown
+        var listBarangExisting = barangService.getAllBarang();
+        model.addAttribute("listBarangExisting", listBarangExisting);
+
+        // Atur parameter page ke 'gudang' untuk menunjukkan bahwa halaman ini adalah halaman gudang
+        model.addAttribute("page", "gudang");
+
+        return "form-restock-barang";
+    }
+
     @PostMapping("/gudang/{idGudang}/restock-barang")
     public String restockBarang(@PathVariable("idGudang") Long idGudang,
                                 @Valid @ModelAttribute UpdateGudangRequestDTO gudangDTO,
+                                BindingResult bindingResult,
                                 Model model) {
-        var gudangFromDTO = gudangMapper.updateGudangRequestDTOToGudang(gudangDTO);
-
-        var gudang = gudangService.updateGudang(gudangFromDTO);
-
-        model.addAttribute("idGudang", idGudang);
+        var gudang = gudangService.getGudangById(idGudang);
         model.addAttribute("gudang", gudang);
+        if (bindingResult.hasErrors()) {
+            String error = bindingResult.getFieldError().getDefaultMessage();
+            model.addAttribute("errorMessage", error);
+            model.addAttribute("gudangDTO", gudangDTO);
+            model.addAttribute("idGudang", idGudang);
 
-        return "success-restock-barang";
+            // Kirim list barang untuk menjadi pilihan pada dropdown
+            var listBarangExisting = barangService.getAllBarang();
+            model.addAttribute("listBarangExisting", listBarangExisting);
+
+            // Atur parameter page ke 'gudang' untuk menunjukkan bahwa halaman ini adalah halaman gudang
+            model.addAttribute("page", "gudang");
+
+            return "form-restock-barang";
+        }
+        try {
+            var gudangFromDTO = gudangMapper.updateGudangRequestDTOToGudang(gudangDTO);
+
+            gudang = gudangService.updateGudang(gudangFromDTO);
+
+            model.addAttribute("idGudang", idGudang);
+            model.addAttribute("gudang", gudang);
+            model.addAttribute("page", "gudang");
+
+            return "success-restock-barang";
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            if (e instanceof DataIntegrityViolationException) {
+                model.addAttribute("errorMessage", "Barang dengan SKU yang sama telah dimasukkan.");
+            } else {
+                model.addAttribute("errorMessage", "Stok minimal 1!");
+            }
+            model.addAttribute("gudangDTO", gudangDTO);
+            model.addAttribute("idGudang", idGudang);
+
+            // Kirim list barang untuk menjadi pilihan pada dropdown
+            var listBarangExisting = barangService.getAllBarang();
+            model.addAttribute("listBarangExisting", listBarangExisting);
+
+            // Atur parameter page ke 'gudang' untuk menunjukkan bahwa halaman ini adalah halaman gudang
+            model.addAttribute("page", "gudang");
+
+            return "form-restock-barang";
+        }
     }
 }

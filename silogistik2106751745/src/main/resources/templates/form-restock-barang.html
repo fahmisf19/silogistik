@@ -23,6 +23,10 @@
         <div class="header">
             <h1 class="text-center m-3">Restock Barang</h1>
             <br>
+            <th:block th:if="${errorMessage != null}">
+                <div class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+                <br>
+            </th:block>
         </div>
         <div class="row">
             <div class="col-sm">
@@ -55,6 +59,7 @@
                             <th class="text-center" style="padding: 1rem 1rem;">#</th>
                             <th class="text-center" style="padding: 1rem 1rem;">Barang</th>
                             <th class="text-center" style="padding: 1rem 1rem;">Kuantitas</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Hapus</th>
                         </tr>
                         </thead>
                         <tbody class="table">
@@ -70,8 +75,11 @@
                                 </select>
                             </td>
                             <td>
-                                <input class="form-control w-100" type="text"
+                                <input class="form-control w-100" type="number"
                                        th:field="*{listGudangBarang[__${iterationStatus.index}__].stok}"/>
+                            </td>
+                            <td>
+                                <button th:value="${iterationStatus.index}" class="btn btn-danger" type="submit" name="deleteRow">Hapus</button>
                             </td>
                             <input class="form-control" type="hidden"
                                    th:field="*{listGudangBarang[__${iterationStatus.index}__].gudang}"

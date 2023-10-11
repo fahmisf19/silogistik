@@ -9,7 +9,7 @@
 <body class="bg-light">
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 <div class="header">
-    <h1 style="text-align: center; margin: 30px">Daftar Permintaan Pengiriman</h1>
+    <h1 class="text-center m-3">Daftar Permintaan Pengiriman</h1>
 </div>
 <div class="text-center mb-2">
     <a type="button"
@@ -31,18 +31,18 @@
                 <th class="text-center" style="padding: 1rem 1rem;">Action</th>
             </tr>
             </thead>
-            <tbody class="table">
-            <tr th:each="permintaanPengiriman, iterationStatus : ${listPermintaanPengiriman}" class="text-center">
-                <td th:text="${iterationStatus.count}"></td>
-                <td th:text="${permintaanPengiriman.waktuPermintaan}"></td>
-                <td th:text="${permintaanPengiriman.nomorPengiriman}"></td>
-                <td th:text="${permintaanPengiriman.namaPenerima}"></td>
-                <td th:text="${permintaanPengiriman.alamatPenerima}"></td>
-                <td th:text="${permintaanPengiriman.tanggalPengiriman}"></td>
+            <tbody class="table" th:if="${listWaktuPermintaan != null and listTanggalPengiriman != null and listWaktuPermintaan.size() > 0 and listTanggalPengiriman.size() > 0}">
+            <tr th:each="index : ${#numbers.sequence(0, listPermintaanPengiriman.size() - 1)}" class="text-center">
+                <td th:text="${index+1}"></td>
+                <td th:text="${listWaktuPermintaan[index]}"></td>
+                <td th:text="${listPermintaanPengiriman[index].nomorPengiriman}"></td>
+                <td th:text="${listPermintaanPengiriman[index].namaPenerima}"></td>
+                <td th:text="${listPermintaanPengiriman[index].alamatPenerima}"></td>
+                <td th:text="${listTanggalPengiriman[index]}"></td>
                 <td>
                     <a type="button"
                        class="btn btn-md btn-primary"
-                       th:href="@{permintaan-pengiriman/{idPermintaanPengiriman}(idPermintaanPengiriman=${permintaanPengiriman.id})}">Detail</a>
+                       th:href="@{permintaan-pengiriman/{idPermintaanPengiriman}(idPermintaanPengiriman=${listPermintaanPengiriman[index].id})}">Detail</a>
                 </td>
             </tr>
             </tbody>

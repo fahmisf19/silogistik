@@ -23,6 +23,10 @@
         <div class="header">
             <h1 class="text-center m-3">Buat Permintaan Pengiriman</h1>
             <br><br>
+            <th:block th:if="${errorMessage != null}">
+                <div class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+                <br>
+            </th:block>
         </div>
         <form th:action="@{/permintaan-pengiriman/tambah}" th:object="${permintaanPengirimanDTO}"
               method="POST">
@@ -31,11 +35,10 @@
                     <div class="row">
                         <div class="col-sm">
                             Karyawan Bertugas: <br>
-                            <select class="form-select custom-select me-2"
-                                    th:field="*{karyawan.id}">
+                            <select class="form-select custom-select me-2" th:field="*{karyawan.id}">
+                                <option value="" selected>Pilih Karyawan</option>
                                 <div th:each="karyawan : ${listKaryawan}">
-                                    <option th:value="${karyawan.id}"
-                                            th:text="${karyawan.nama}"></option>
+                                    <option th:value="${karyawan.id}" th:text="${karyawan.nama}"></option>
                                 </div>
                             </select>
                             <br><br>
@@ -55,6 +58,7 @@
                         <div class="col-sm">
                             Jenis Layanan: <br>
                             <select class="form-select custom-select me-2" id="listJenisLayanan" name="listJenisLayanan" th:field="*{jenisLayanan}">
+                                <option value="" selected>Pilih Jenis layanan</option>
                                 <option th:each="jenisLayanan, iterStat : ${listJenisLayanan}"
                                         th:value="${iterStat.count}" th:text="${jenisLayanan}"></option>
                             </select>
@@ -68,7 +72,7 @@
                         </div>
                         <div class="col-sm">
                             Biaya Pengiriman: <br>
-                            <input class="form-control" type="text" th:field="*{biayaPengiriman}" />
+                            <input class="form-control" type="number" th:field="*{biayaPengiriman}" />
                             <br><br>
                         </div>
                     </div>
@@ -84,6 +88,7 @@
                             <th class="text-center" style="padding: 1rem 1rem;">#</th>
                             <th class="text-center" style="padding: 1rem 1rem;">Barang</th>
                             <th class="text-center" style="padding: 1rem 1rem;">Kuantitas</th>
+                            <th class="text-center" style="padding: 1rem 1rem;">Hapus</th>
                         </tr>
                         </thead>
                         <tbody class="table">
@@ -99,9 +104,13 @@
                                 </select>
                             </td>
                             <td>
-                                <input class="form-control w-100" type="text"
+                                <input class="form-control w-100" type="number" th:value="${listPermintaanPengirimanBarang[__${iterationStatus.index}__].kuantitasPengiriman}"
                                        th:field="*{listPermintaanPengirimanBarang[__${iterationStatus.index}__].kuantitasPengiriman}"/>
                             </td>
+                            <td>
+                                <button th:value="${iterationStatus.index}" class="btn btn-danger" type="submit" name="deleteRow">Hapus</button>
+                            </td>
+
                         </tr>
 
                         </tbody>

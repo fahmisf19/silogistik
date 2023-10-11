@@ -21,5 +21,6 @@ public class CreateGudangRequestDTO {
     @Size(max = 255)
     private String alamatGudang;
 
+    @NotNull(message = "Barang tidak boleh kosong!")
     private List<GudangBarang> listGudangBarang;
 }

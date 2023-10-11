@@ -2,14 +2,16 @@ package apap.ti.silogistik2106751745.controller;
 
 import apap.ti.silogistik2106751745.dto.PermintaanPengirimanMapper;
 import apap.ti.silogistik2106751745.dto.request.CreatePermintaanPengirimanRequestDTO;
-import apap.ti.silogistik2106751745.model.PermintaanPengiriman;
 import apap.ti.silogistik2106751745.model.PermintaanPengirimanBarang;
 import apap.ti.silogistik2106751745.service.BarangService;
 import apap.ti.silogistik2106751745.service.KaryawanService;
 import apap.ti.silogistik2106751745.service.PermintaanPengirimanBarangService;
 import apap.ti.silogistik2106751745.service.PermintaanPengirimanService;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +42,22 @@ public class PermintaanPengirimanController {
     public String listPermintaanPengiriman(Model model) {
         var listPermintaanPengiriman = permintaanPengirimanService.getAllPermintaanPengiriman();
 
+        SimpleDateFormat dateOnlyFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
+
+        var listWaktuPermintaan = new ArrayList<>();
+        var listTanggalPengiriman = new ArrayList<>();
+
+        for (int i = 0; i < listPermintaanPengiriman.size(); i++) {
+            String datePartWaktuPermintaan = dateOnlyFormat.format(listPermintaanPengiriman.get(i).getWaktuPermintaan());
+            String timePartWaktuPermintaan = timeOnlyFormat.format(listPermintaanPengiriman.get(i).getWaktuPermintaan());
+            String datePartTanggalPengiriman = dateOnlyFormat.format(listPermintaanPengiriman.get(i).getTanggalPengiriman());
+            listWaktuPermintaan.add(datePartWaktuPermintaan + ", " + timePartWaktuPermintaan);
+            listTanggalPengiriman.add(datePartTanggalPengiriman);
+        }
+        model.addAttribute("listWaktuPermintaan", listWaktuPermintaan);
+        model.addAttribute("listTanggalPengiriman", listTanggalPengiriman);
+
         model.addAttribute("listPermintaanPengiriman", listPermintaanPengiriman);
         model.addAttribute("page", "permintaan-pengiriman");
 
@@ -58,7 +76,6 @@ public class PermintaanPengirimanController {
                 "Hemat"
         );
         // Define the date format for parsing
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
         SimpleDateFormat dateOnlyFormat = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
@@ -101,7 +118,7 @@ public class PermintaanPengirimanController {
         model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
         model.addAttribute("listPermintaanPengirimanBarang", listPermintaanPengirimanBarang);
 
-        // Atur parameter page ke 'barang' untuk menunjukkan bahwa halaman ini adalah halaman barang
+        // Atur parameter page ke 'permintaan-pengiriman' untuk menunjukkan bahwa halaman ini adalah halaman permintaan-pengiriman
         model.addAttribute("page", "permintaan-pengiriman");
 
         return "form-tambah-permintaan-pengiriman";
@@ -116,6 +133,7 @@ public class PermintaanPengirimanController {
             permintaanPengirimanDTO.setListPermintaanPengirimanBarang(new ArrayList<>());
         }
         permintaanPengirimanDTO.getListPermintaanPengirimanBarang().add(new PermintaanPengirimanBarang());
+        permintaanPengirimanDTO.getListPermintaanPengirimanBarang().get(permintaanPengirimanDTO.getListPermintaanPengirimanBarang().size()-1).setKuantitasPengiriman(1);
         // Kirim list barang untuk menjadi pilihan pada dropdown
         List<String> listJenisLayanan = Arrays.asList(
                 "Same Day",
@@ -135,51 +153,119 @@ public class PermintaanPengirimanController {
 
         return "form-tambah-permintaan-pengiriman";
     }
+    @PostMapping(value = "/permintaan-pengiriman/tambah", params = {"deleteRow"})
+    public String deleteRow(
+            @ModelAttribute CreatePermintaanPengirimanRequestDTO permintaanPengirimanDTO,
+            @RequestParam("deleteRow") int row,
+            Model model
+    ) {
+        permintaanPengirimanDTO.getListPermintaanPengirimanBarang().remove(row);
+        List<String> listJenisLayanan = Arrays.asList(
+                "Same Day",
+                "Kilat",
+                "Reguler",
+                "Hemat"
+        );
+        model.addAttribute("listPermintaanPengirimanBarang", permintaanPengirimanDTO.getListPermintaanPengirimanBarang());
+        model.addAttribute("listJenisLayanan", listJenisLayanan);
+        model.addAttribute("listBarang", barangService.getAllBarang());
+        model.addAttribute("listKaryawan", karyawanService.getAllKaryawan());
+
+        model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
+
+        model.addAttribute("page", "permintaan-pengiriman");
+
+        return "form-tambah-permintaan-pengiriman";
+    }
 
     @PostMapping("/permintaan-pengiriman/tambah")
     public String tambahPermintaanPengiriman(@Valid @ModelAttribute CreatePermintaanPengirimanRequestDTO permintaanPengirimanDTO,
                             BindingResult bindingResult,
                             Model model) {
-        List<String> listJenisLayanan = Arrays.asList(
-                "SAM",
-                "KIL",
-                "REG",
-                "HEM"
-        );
-        // Set waktuPermintaan, nomorPengiriman, dan IsCancelled pada DTO
-        permintaanPengirimanDTO.setWaktuPermintaan(new Date());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        Date waktuPermintaan = permintaanPengirimanDTO.getWaktuPermintaan();
-        String kodeWaktu = timeFormat.format(waktuPermintaan);
-        String shipmentNumber = "REQXX"  + listJenisLayanan.get(permintaanPengirimanDTO.getJenisLayanan()-1) + kodeWaktu;
-        permintaanPengirimanDTO.setNomorPengiriman(shipmentNumber);
-        permintaanPengirimanDTO.setIsCancelled(false);
+        try {
+            if (bindingResult.hasErrors()) {
+                String error = bindingResult.getFieldError().getDefaultMessage();
 
-        // Melakukan Mapping
-        var permintaanPengiriman = permintaanPengirimanMapper.createPermintaanPengirimanRequestDTOToPermintaanPengiriman(permintaanPengirimanDTO);
+                model.addAttribute("errorMessage", error);
+                List<String> listJenisLayanan = Arrays.asList(
+                        "Same Day",
+                        "Kilat",
+                        "Reguler",
+                        "Hemat"
+                );
+                model.addAttribute("listPermintaanPengirimanBarang", permintaanPengirimanDTO.getListPermintaanPengirimanBarang());
+                model.addAttribute("listJenisLayanan", listJenisLayanan);
+                model.addAttribute("listBarang", barangService.getAllBarang());
+                model.addAttribute("listKaryawan", karyawanService.getAllKaryawan());
 
-        // Set listPermintaanPengirimanBarang dengan id permintaanPengiriman
-        var listBarangTemp = permintaanPengiriman.getListPermintaanPengirimanBarang();
-        for (int i = 0; i < listBarangTemp.size(); i++) {
-            listBarangTemp.get(i).setPermintaanPengiriman(permintaanPengiriman);
+                model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
+
+                model.addAttribute("page", "permintaan-pengiriman");
+
+                return "form-tambah-permintaan-pengiriman";
+            }
+            List<String> listJenisLayanan = Arrays.asList(
+                    "SAM",
+                    "KIL",
+                    "REG",
+                    "HEM"
+            );
+            // Set waktuPermintaan, nomorPengiriman, dan IsCancelled pada DTO
+            permintaanPengirimanDTO.setWaktuPermintaan(new Date());
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            Date waktuPermintaan = permintaanPengirimanDTO.getWaktuPermintaan();
+            String kodeWaktu = timeFormat.format(waktuPermintaan);
+            String shipmentNumber = "REQXX"  + listJenisLayanan.get(permintaanPengirimanDTO.getJenisLayanan()-1) + kodeWaktu;
+            permintaanPengirimanDTO.setNomorPengiriman(shipmentNumber);
+            permintaanPengirimanDTO.setIsCancelled(false);
+
+            // Melakukan Mapping
+            var permintaanPengiriman = permintaanPengirimanMapper.createPermintaanPengirimanRequestDTOToPermintaanPengiriman(permintaanPengirimanDTO);
+
+            // Set listPermintaanPengirimanBarang dengan id permintaanPengiriman
+            var listBarangTemp = permintaanPengiriman.getListPermintaanPengirimanBarang();
+            for (int i = 0; i < listBarangTemp.size(); i++) {
+                listBarangTemp.get(i).setPermintaanPengiriman(permintaanPengiriman);
+            }
+            permintaanPengiriman.setListPermintaanPengirimanBarang(listBarangTemp);
+
+            //Memanggil Service savePermintaanPengiriman
+            permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
+
+            // Set kembali nomorPengiriman dengan total kuantitas permintaanPengirimanBarang
+            permintaanPengiriman = permintaanPengirimanService.getPermintaanPengirimanById(permintaanPengiriman.getId());
+            permintaanPengiriman.setNomorPengiriman(permintaanPengiriman.getNomorPengiriman().replace("XX", String.format("%02d", permintaanPengirimanBarangService.getTotalKuantitasByPermintaanPengirimanId(permintaanPengiriman.getId()))));
+            permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
+
+            //Add variabel sku buku ke 'nomorPengiriman' untuk dirender di thymeleaf
+            model.addAttribute("nomorPengiriman", permintaanPengiriman.getNomorPengiriman());
+
+            // Atur parameter page ke 'permintaan-pengiriman' untuk menunjukkan bahwa halaman ini adalah halaman permintaan-pengiriman
+            model.addAttribute("page", "permintaan-pengiriman");
+
+            return "success-tambah-permintaan-pengiriman";
+
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            if (e instanceof DataIntegrityViolationException) {
+                model.addAttribute("errorMessage", "Barang dengan SKU yang sama telah dimasukkan.");
+            } else {
+                model.addAttribute("errorMessage", "Kuantitas minimal 1!");
+            }
+            List<String> listJenisLayanan = Arrays.asList(
+                    "Same Day",
+                    "Kilat",
+                    "Reguler",
+                    "Hemat"
+            );
+            model.addAttribute("listPermintaanPengirimanBarang", permintaanPengirimanDTO.getListPermintaanPengirimanBarang());
+            model.addAttribute("listJenisLayanan", listJenisLayanan);
+            model.addAttribute("listBarang", barangService.getAllBarang());
+            model.addAttribute("listKaryawan", karyawanService.getAllKaryawan());
+            model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
+            model.addAttribute("page", "permintaan-pengiriman");
+            return "form-tambah-permintaan-pengiriman";
         }
-        permintaanPengiriman.setListPermintaanPengirimanBarang(listBarangTemp);
 
-        //Memanggil Service savePermintaanPengiriman
-        permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
-
-        // Set kembali nomorPengiriman dengan total kuantitas permintaanPengirimanBarang
-        permintaanPengiriman = permintaanPengirimanService.getPermintaanPengirimanById(permintaanPengiriman.getId());
-        permintaanPengiriman.setNomorPengiriman(permintaanPengiriman.getNomorPengiriman().replace("XX", String.format("%02d", permintaanPengirimanBarangService.getTotalKuantitasByPermintaanPengirimanId(permintaanPengiriman.getId()))));
-        permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
-
-        //Add variabel sku buku ke 'nomorPengiriman' untuk dirender di thymeleaf
-        model.addAttribute("nomorPengiriman", permintaanPengiriman.getNomorPengiriman());
-
-        // Atur parameter page ke 'permintaan-pengiriman' untuk menunjukkan bahwa halaman ini adalah halaman permintaan-pengiriman
-        model.addAttribute("page", "permintaan-pengiriman");
-
-        return "success-tambah-permintaan-pengiriman";
     }
 
     @GetMapping("/permintaan-pengiriman/{idPermintaanPengiriman}/cancel")
@@ -195,12 +281,13 @@ public class PermintaanPengirimanController {
         // Atur parameter page ke 'permintaan-pengiriman' untuk menunjukkan bahwa halaman ini adalah halaman permintaan-pengiriman
         model.addAttribute("page", "permintaan-pengiriman");
 
+        model.addAttribute("nomorPengiriman", nomorPengiriman);
+
         if (selisihJam <= 24) {
             permintaanPengirimanService.cancelPermintaanPengiriman(permintaanPengiriman);
-            model.addAttribute("nomorPengiriman", nomorPengiriman);
             return "success-cancel-permintaan-pengiriman";
         } else {
-            return "fail-cancel";
+            return "fail-cancel-permintaan-pengiriman";
         }
     }
 
@@ -230,15 +317,29 @@ public class PermintaanPengirimanController {
                 parsedStartDate = dateFormat.parse(startDate);
                 parsedEndDate = dateFormat.parse(endDate);
             } catch (ParseException e) {
-                // Handle date parsing error
-                return "error-page"; // Redirect to an error page
+                model.addAttribute("page", "bonus");
+                return "filter-permintaan-pengiriman";
             }
 
-            // Call a service method to fetch shipment requests within the specified time frame and containing the SKU
             List<PermintaanPengirimanBarang> listFilter = permintaanPengirimanBarangService.getFilterPermintaanPengiriman(parsedStartDate, parsedEndDate, sku);
             model.addAttribute("listFilter", listFilter);
+            SimpleDateFormat dateOnlyFormat = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
+
+            var listWaktuPermintaan = new ArrayList<>();
+            var listTanggalPengiriman = new ArrayList<>();
+
+            for (int i = 0; i < listFilter.size(); i++) {
+                String datePartWaktuPermintaan = dateOnlyFormat.format(listFilter.get(i).getPermintaanPengiriman().getWaktuPermintaan());
+                String timePartWaktuPermintaan = timeOnlyFormat.format(listFilter.get(i).getPermintaanPengiriman().getWaktuPermintaan());
+                String datePartTanggalPengiriman = dateOnlyFormat.format(listFilter.get(i).getPermintaanPengiriman().getTanggalPengiriman());
+                listWaktuPermintaan.add(datePartWaktuPermintaan + ", " + timePartWaktuPermintaan);
+                listTanggalPengiriman.add(datePartTanggalPengiriman);
+            }
+            model.addAttribute("listWaktuPermintaan", listWaktuPermintaan);
+            model.addAttribute("listTanggalPengiriman", listTanggalPengiriman);
         }
         model.addAttribute("page", "bonus");
-        return "filter-permintaan-pengiriman"; // Create a view to display filtered requests
+        return "filter-permintaan-pengiriman";
     }
 }

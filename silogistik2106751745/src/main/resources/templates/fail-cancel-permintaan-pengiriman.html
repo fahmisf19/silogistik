@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Gagal Cancel Permintaan Pengiriman</title>
+</head>
+
+<body class="bg.light">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="text-center">
+                <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 45C34.9263 45 45 34.9265 45 22.5C45 10.0735 34.9263 0 22.5 0C10.0737 0 0 10.0735 0 22.5C0 34.9265 10.0737 45 22.5 45ZM10.0605 13.4355L18.0645 21.4395C18.6499 22.0251 18.6499 22.9749 18.0645 23.5605L10.0605 31.5645C9.4751 32.1501 9.4751 33.0999 10.0605 33.6855L11.3145 34.9395C11.8999 35.5251 12.8501 35.5251 13.4355 34.9395L21.3921 26.9827C21.9961 26.3789 22.9814 26.4004 23.5586 27.0298L30.8335 34.9663C31.3672 35.5481 32.2598 35.6169 32.8765 35.124L34.6914 33.6719C35.3896 33.1135 35.4473 32.072 34.8149 31.4399L26.9355 23.5605C26.3501 22.9749 26.3501 22.0251 26.9355 21.4395L34.9395 13.4355C35.5249 12.8499 35.5249 11.9001 34.9395 11.3145L33.6855 10.0605C33.1001 9.47485 32.1499 9.47485 31.5645 10.0605L23.5605 18.0645C22.9751 18.6501 22.0249 18.6501 21.4395 18.0645L13.4355 10.0605C12.8501 9.47485 11.8999 9.47485 11.3145 10.0605L10.0605 11.3145C9.4751 11.9001 9.4751 12.8499 10.0605 13.4355Z" fill="#DE2F2F"/>
+                </svg>
+                <br>
+            </div>
+            <div class="text-center">
+                <h2 th:text="'Permintaan pengiriman dengan nomor pengiriman ' + ${nomorPengiriman} + ' tidak berhasil dihapus, karena permintaan sudah melebihi 24 jam sejak dibuat.'"></h2>
+                <br><br>
+            </div>
+            <div class="text-center m-3">
+                <a class="btn btn-primary" href="/">Home</a>
+                <a class="btn btn-primary" th:href="@{/permintaan-pengiriman}">Lihat Permintaan Pengiriman</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

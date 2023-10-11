@@ -11,5 +11,5 @@ public interface GudangBarangService {
     void saveGudangBarang(GudangBarang gudangBarang);
 
     Integer getTotalStok(String skuBarang);
-
+    GudangBarang getGudangBarangByIdGudangBarangSku(Long idGudang, String barangSku);
 }

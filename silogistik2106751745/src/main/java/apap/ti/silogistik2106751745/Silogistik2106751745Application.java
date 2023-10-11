@@ -90,61 +90,6 @@ public class Silogistik2106751745Application {
 
 			var barang = barangMapper.createBarangRequestDTOToBarang(barangDTO);
 			barangService.saveBarang(barang);
-
-			var permintaanPengirimanDTO = new CreatePermintaanPengirimanRequestDTO();
-
-			// Generate a random service type (1 = SAM, 2 = KIL, 3 = REG, 4 = HEM)
-			int serviceType = faker.random().nextInt(1, 4);
-			List<String> listJenisLayanan = Arrays.asList(
-					"SAM",
-					"KIL",
-					"REG",
-					"HEM"
-			);
-
-			Date startDate = new Date();  // You can set your own start date here
-			Date endDate = new Date();    // You can set your own end date here
-
-			// Calculate the range in milliseconds
-			long range = endDate.getTime() - startDate.getTime();
-
-			// Generate a random timestamp within the range
-			long randomTimestamp = (long) (Math.random() * range) + startDate.getTime();
-
-			// Create a Date object from the random timestamp
-			Date randomDate = new Date(randomTimestamp);
-
-			permintaanPengirimanDTO.setIsCancelled(false);
-			permintaanPengirimanDTO.setNamaPenerima(faker.name().fullName());
-			permintaanPengirimanDTO.setAlamatPenerima(faker.address().streetAddress() + ", " + faker.address().cityName());
-			permintaanPengirimanDTO.setTanggalPengiriman(randomDate);
-			permintaanPengirimanDTO.setBiayaPengiriman((int) faker.number().randomDouble(2, 1000, 100000));
-			permintaanPengirimanDTO.setJenisLayanan(serviceType);
-
-			permintaanPengirimanDTO.setWaktuPermintaan(new Date());
-			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-			Date waktuPermintaan = permintaanPengirimanDTO.getWaktuPermintaan();
-			String kodeWaktu = timeFormat.format(waktuPermintaan);
-			String shipmentNumber = "REQXX"  + listJenisLayanan.get(serviceType-1) + kodeWaktu;
-			permintaanPengirimanDTO.setNomorPengiriman(shipmentNumber);
-			permintaanPengirimanDTO.setKaryawan(karyawan);
-
-			var permintaanPengiriman = permintaanPengirimanMapper.createPermintaanPengirimanRequestDTOToPermintaanPengiriman(permintaanPengirimanDTO);
-			permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
-
-			var permintaanPengirimanBarangDTO = new CreatePermintaanPengirimanBarangRequestDTO();
-			permintaanPengirimanBarangDTO.setPermintaanPengiriman(permintaanPengiriman);
-			permintaanPengirimanBarangDTO.setBarang(barang);
-			permintaanPengirimanBarangDTO.setKuantitasPengiriman(2);
-
-			var permintaanPengirimanBarang = permintaanPengirimanBarangMapper.createPermintaanPengirimanBarangRequestDTOToPermintaanPengirimanBarang(permintaanPengirimanBarangDTO);
-			permintaanPengirimanBarangService.savePermintaanPengirimanBarang(permintaanPengirimanBarang);
-
-			var totalKuantitas = permintaanPengirimanBarangService.getTotalKuantitasByPermintaanPengirimanId(permintaanPengiriman.getId());
-
-			permintaanPengiriman = permintaanPengirimanService.getPermintaanPengirimanById(permintaanPengiriman.getId());
-			permintaanPengiriman.setNomorPengiriman(permintaanPengiriman.getNomorPengiriman().replace("XX", String.format("%02d", totalKuantitas)));
-			permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
 		};
 	}
 }

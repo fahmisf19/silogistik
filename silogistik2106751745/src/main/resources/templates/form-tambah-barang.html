@@ -42,7 +42,7 @@
                     <table class="table">
                         <tbody>
                         <tr>
-                            <select class="form-control" id="listTipeBarang" name="listTipeBarang" th:field="*{tipeBarang}">
+                            <select class="form-select custom-select me-2" id="listTipeBarang" name="listTipeBarang" th:field="*{tipeBarang}">
                                 <option th:each="tipeBarang, iterStat : ${listTipeBarang}"
                                         th:value="${iterStat.count}" th:text="${tipeBarang}"></option>
                             </select>
