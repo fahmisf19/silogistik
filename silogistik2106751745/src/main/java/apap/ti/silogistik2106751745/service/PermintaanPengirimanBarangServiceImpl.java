@@ -18,6 +18,7 @@ public class PermintaanPengirimanBarangServiceImpl implements PermintaanPengirim
 
     @Override
     public void savePermintaanPengirimanBarang(PermintaanPengirimanBarang permintaanPengirimanBarang) { permintaanPengirimanBarangDb.save(permintaanPengirimanBarang); }
+
     @Override
     public Integer getTotalKuantitasByPermintaanPengirimanId(Long id) {
         return permintaanPengirimanBarangDb.findTotalKuantitasByPermintaanPengirimanId(id);

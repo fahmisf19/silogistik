@@ -9,7 +9,6 @@ import apap.ti.silogistik2106751745.service.PermintaanPengirimanBarangService;
 import apap.ti.silogistik2106751745.service.PermintaanPengirimanService;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;

@@ -5,7 +5,6 @@ import apap.ti.silogistik2106751745.model.Barang;
 import java.util.List;
 
 public interface BarangService {
-
     void saveBarang(Barang barang);
     List<Barang> getAllBarang();
     List<Barang> getAllBarangSort();

@@ -1,16 +1,10 @@
 package apap.ti.silogistik2106751745.controller;
 
 import apap.ti.silogistik2106751745.dto.BarangMapper;
-import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
 import apap.ti.silogistik2106751745.dto.request.CreateBarangRequestDTO;
-import apap.ti.silogistik2106751745.dto.request.CreateGudangBarangRequestDTO;
 import apap.ti.silogistik2106751745.dto.request.UpdateBarangRequestDTO;
-import apap.ti.silogistik2106751745.model.Barang;
-import apap.ti.silogistik2106751745.model.Gudang;
-import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.service.BarangService;
 import apap.ti.silogistik2106751745.service.GudangBarangService;
-import apap.ti.silogistik2106751745.service.GudangService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class BarangController {
@@ -36,16 +29,7 @@ public class BarangController {
     private BarangMapper barangMapper;
 
     @Autowired
-    private GudangService gudangService;
-
-    @Autowired
-    GudangBarangMapper gudangBarangMapper;
-
-    @Autowired
     GudangBarangService gudangBarangService;
-
-    @Autowired
-    GudangBarangDb gudangBarangDb;
 
     @GetMapping("/barang")
     public String listBarang(Model model) {

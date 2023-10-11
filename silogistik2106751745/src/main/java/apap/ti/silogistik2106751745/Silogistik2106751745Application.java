@@ -30,11 +30,7 @@ public class Silogistik2106751745Application {
 						  GudangMapper gudangMapper,
 						  KaryawanMapper karyawanMapper,
 						  BarangMapper barangMapper,
-						  BarangDb barangDb,
-						  PermintaanPengirimanMapper permintaanPengirimanMapper,
-						  PermintaanPengirimanService permintaanPengirimanService,
-						  PermintaanPengirimanBarangMapper permintaanPengirimanBarangMapper,
-						  PermintaanPengirimanBarangService permintaanPengirimanBarangService) {
+						  BarangDb barangDb) {
 		return args -> {
 			var faker = new Faker(new Locale("in-ID"));
 

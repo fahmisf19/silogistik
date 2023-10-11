@@ -14,10 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface GudangBarangDb extends JpaRepository<GudangBarang, Long> {
-
-    @Query("SELECT gb.stok FROM GudangBarang gb WHERE gb.barang.sku = :barangSku")
-    List<Integer> getAllBarangStokByBarangSku(@Param("barangSku") String barangSku);
-
     @Query("SELECT SUM(gb.stok) FROM GudangBarang gb WHERE gb.barang.sku = :barangSku")
     Integer findTotalStokByBarangSku(@Param("barangSku") String barangSku);
 

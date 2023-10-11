@@ -1,10 +1,8 @@
 package apap.ti.silogistik2106751745.controller;
 
-import apap.ti.silogistik2106751745.dto.GudangBarangMapper;
 import apap.ti.silogistik2106751745.dto.GudangMapper;
 import apap.ti.silogistik2106751745.dto.request.UpdateGudangRequestDTO;
 import apap.ti.silogistik2106751745.model.GudangBarang;
-import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.service.*;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -16,8 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class GudangController {
@@ -30,15 +26,7 @@ public class GudangController {
     @Autowired
     KaryawanService karyawanService;
     @Autowired
-    GudangBarangService gudangBarangService;
-    @Autowired
     GudangMapper gudangMapper;
-    @Autowired
-    GudangBarangMapper gudangBarangMapper;
-    @Autowired
-    GudangBarangDb gudangBarangDb;
-
-
 
     @GetMapping("/")
     public String beranda(Model model) {

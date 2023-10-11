@@ -5,7 +5,6 @@ import apap.ti.silogistik2106751745.model.GudangBarang;
 import apap.ti.silogistik2106751745.repository.GudangBarangDb;
 import apap.ti.silogistik2106751745.repository.GudangDb;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,12 +14,6 @@ import java.util.Optional;
 public class GudangServiceImpl implements GudangService {
     @Autowired
     GudangDb gudangDb;
-
-    @Autowired
-    GudangBarangDb gudangBarangDb;
-
-    @Autowired
-    GudangBarangService gudangBarangService;
 
     @Override
     public void saveGudang(Gudang gudang) { gudangDb.save(gudang); }
