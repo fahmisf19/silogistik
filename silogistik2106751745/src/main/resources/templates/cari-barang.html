@@ -29,6 +29,7 @@
         </div>
 
         <div class="container-fluid">
+            <p th:if="${errorMessage != null}" class="m-3" th:text="${errorMessage}"></p>
             <div class="table-responsive-md"
             style="-webkit-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); -moz-box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);">
                 <table class="table table-hover rounded rounded-3 overflow-hidden"

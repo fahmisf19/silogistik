@@ -10,4 +10,6 @@ public interface GudangBarangService {
     void saveGudangBarang(GudangBarang gudangBarang);
 
     Integer getTotalStok(String skuBarang);
+
+    String getBarangMerk(String skuBarang);
 }

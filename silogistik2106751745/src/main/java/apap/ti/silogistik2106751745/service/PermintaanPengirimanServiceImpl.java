@@ -1,6 +1,7 @@
 package apap.ti.silogistik2106751745.service;
 
 import apap.ti.silogistik2106751745.model.PermintaanPengiriman;
+import apap.ti.silogistik2106751745.model.PermintaanPengirimanBarang;
 import apap.ti.silogistik2106751745.repository.PermintaanPengirimanDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class PermintaanPengirimanServiceImpl implements PermintaanPengirimanServ
     @Autowired
     PermintaanPengirimanDb permintaanPengirimanDb;
 
-    public List<PermintaanPengiriman> getAllPermintaanPengiriman() { return permintaanPengirimanDb.findByIsCancelledFalse(); }
+    public List<PermintaanPengiriman> getAllPermintaanPengiriman() { return permintaanPengirimanDb.findAllByOrderByWaktuPermintaanDesc(); }
 
     @Override
     public PermintaanPengiriman getPermintaanPengirimanById(Long id) {

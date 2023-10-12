@@ -2,11 +2,9 @@ package apap.ti.silogistik2106751745.controller;
 
 import apap.ti.silogistik2106751745.dto.PermintaanPengirimanMapper;
 import apap.ti.silogistik2106751745.dto.request.CreatePermintaanPengirimanRequestDTO;
+import apap.ti.silogistik2106751745.model.GudangBarang;
 import apap.ti.silogistik2106751745.model.PermintaanPengirimanBarang;
-import apap.ti.silogistik2106751745.service.BarangService;
-import apap.ti.silogistik2106751745.service.KaryawanService;
-import apap.ti.silogistik2106751745.service.PermintaanPengirimanBarangService;
-import apap.ti.silogistik2106751745.service.PermintaanPengirimanService;
+import apap.ti.silogistik2106751745.service.*;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,8 @@ public class PermintaanPengirimanController {
     private BarangService barangService;
     @Autowired
     private KaryawanService karyawanService;
+    @Autowired
+    private GudangBarangService gudangBarangService;
 
     @GetMapping("/permintaan-pengiriman")
     public String listPermintaanPengiriman(Model model) {
@@ -132,7 +132,6 @@ public class PermintaanPengirimanController {
             permintaanPengirimanDTO.setListPermintaanPengirimanBarang(new ArrayList<>());
         }
         permintaanPengirimanDTO.getListPermintaanPengirimanBarang().add(new PermintaanPengirimanBarang());
-        permintaanPengirimanDTO.getListPermintaanPengirimanBarang().get(permintaanPengirimanDTO.getListPermintaanPengirimanBarang().size()-1).setKuantitasPengiriman(1);
         // Kirim list barang untuk menjadi pilihan pada dropdown
         List<String> listJenisLayanan = Arrays.asList(
                 "Same Day",
@@ -218,6 +217,31 @@ public class PermintaanPengirimanController {
             permintaanPengirimanDTO.setNomorPengiriman(shipmentNumber);
             permintaanPengirimanDTO.setIsCancelled(false);
 
+            for (PermintaanPengirimanBarang permintaanPengirimanBarang : permintaanPengirimanDTO.getListPermintaanPengirimanBarang()) {
+                Integer totalStok = gudangBarangService.getTotalStok(permintaanPengirimanBarang.getBarang().getSku());
+                if (totalStok == null) {
+                    model.addAttribute("errorMessage", "Stok barang tidak ditemukan.");
+                    model.addAttribute("listPermintaanPengirimanBarang", permintaanPengirimanDTO.getListPermintaanPengirimanBarang());
+                    model.addAttribute("listJenisLayanan", listJenisLayanan);
+                    model.addAttribute("listBarang", barangService.getAllBarang());
+                    model.addAttribute("listKaryawan", karyawanService.getAllKaryawan());
+                    model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
+                    model.addAttribute("page", "permintaan-pengiriman");
+                    return "form-tambah-permintaan-pengiriman";
+                }
+
+                if (permintaanPengirimanBarang.getKuantitasPengiriman() > totalStok) {
+                    model.addAttribute("errorMessage", "Kuantitas " + gudangBarangService.getBarangMerk(permintaanPengirimanBarang.getBarang().getSku()) + " melebihi stok barang (max = " + totalStok + ").");
+                    model.addAttribute("listPermintaanPengirimanBarang", permintaanPengirimanDTO.getListPermintaanPengirimanBarang());
+                    model.addAttribute("listJenisLayanan", listJenisLayanan);
+                    model.addAttribute("listBarang", barangService.getAllBarang());
+                    model.addAttribute("listKaryawan", karyawanService.getAllKaryawan());
+                    model.addAttribute("permintaanPengirimanDTO", permintaanPengirimanDTO);
+                    model.addAttribute("page", "permintaan-pengiriman");
+                    return "form-tambah-permintaan-pengiriman";
+                }
+            }
+
             // Melakukan Mapping
             var permintaanPengiriman = permintaanPengirimanMapper.createPermintaanPengirimanRequestDTOToPermintaanPengiriman(permintaanPengirimanDTO);
 
@@ -227,7 +251,6 @@ public class PermintaanPengirimanController {
                 listBarangTemp.get(i).setPermintaanPengiriman(permintaanPengiriman);
             }
             permintaanPengiriman.setListPermintaanPengirimanBarang(listBarangTemp);
-
             //Memanggil Service savePermintaanPengiriman
             permintaanPengirimanService.savePermintaanPengiriman(permintaanPengiriman);
 
@@ -299,22 +322,27 @@ public class PermintaanPengirimanController {
     ) {
         var listBarang = barangService.getAllBarangSort();
         model.addAttribute("listBarang", listBarang);
+        String errorMessage = null;
 
         if (sku != null && !sku.isEmpty() && startDate != null && endDate != null) {
             var selected = barangService.getBarangBySku(sku);
+            var selectedMerk= selected.getMerk();
             var selectedStart = startDate;
             var selectedEnd = endDate;
+
             model.addAttribute("selectedStart", selectedStart);
             model.addAttribute("selectedEnd", selectedEnd);
             model.addAttribute("selected", selected);
+            model.addAttribute("selectedMerk", selectedMerk);
             model.addAttribute("listBarang", listBarang);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormatStart = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date parsedStartDate;
             Date parsedEndDate;
             try {
-                parsedStartDate = dateFormat.parse(startDate);
-                parsedEndDate = dateFormat.parse(endDate);
+                parsedStartDate = dateFormatStart.parse(startDate);
+                parsedEndDate = dateFormatEnd.parse(endDate+" 23:59:59");
             } catch (ParseException e) {
                 model.addAttribute("page", "bonus");
                 return "filter-permintaan-pengiriman";
@@ -322,6 +350,12 @@ public class PermintaanPengirimanController {
 
             List<PermintaanPengirimanBarang> listFilter = permintaanPengirimanBarangService.getFilterPermintaanPengiriman(parsedStartDate, parsedEndDate, sku);
             model.addAttribute("listFilter", listFilter);
+
+            if (listFilter.isEmpty()){
+                errorMessage = "Tidak ditemukan permintaan pengiriman dengan barang " + selectedMerk + " pada rentang waktu tersebut!";
+            }
+            model.addAttribute("errorMessage", errorMessage);
+
             SimpleDateFormat dateOnlyFormat = new SimpleDateFormat("dd-MM-yyyy");
             SimpleDateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
 

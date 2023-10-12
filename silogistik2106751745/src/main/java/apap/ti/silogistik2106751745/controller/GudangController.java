@@ -72,20 +72,30 @@ public class GudangController {
         var listBarang = barangService.getAllBarangSort();
         model.addAttribute("listBarang", listBarang);
 
+        String errorMessage = null;
+
         if (sku != null && !sku.isEmpty()) {
             var selected = barangService.getBarangBySku(sku);
-            model.addAttribute("selected", selected);
-            model.addAttribute("listBarang", listBarang);
+            var selectedMerk = selected.getMerk();
 
-            var listGudangBarang = barangService.getBarangBySku(sku).getListGudangBarang();
+            var listGudangBarang = selected.getListGudangBarang();
+            if (listGudangBarang.isEmpty()){
+                errorMessage = "Tidak ditemukan barang " + selectedMerk + " di gudang mana pun!";
+            }
+            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("selected", selected);
+            model.addAttribute("selectedMerk", selectedMerk);
             model.addAttribute("listGudangBarang", listGudangBarang);
+
         }
+
 
         // Atur parameter page ke 'barang' untuk menunjukkan bahwa halaman ini adalah halaman barang
         model.addAttribute("page", "gudang");
 
         return "cari-barang";
     }
+
 
     @GetMapping("/gudang/{idGudang}/restock-barang")
     public String formRestockBarang(@PathVariable("idGudang") Long idGudang, Model model) {

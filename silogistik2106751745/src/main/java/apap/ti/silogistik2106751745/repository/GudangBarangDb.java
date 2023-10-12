@@ -21,4 +21,8 @@ public interface GudangBarangDb extends JpaRepository<GudangBarang, Long> {
     GudangBarang findGudangBarangByGudangIdBarangSku(
             @Param("gudangId") Long gudangId,
             @Param("barangSku") String barangSku);
+
+    @Query("SELECT gb.barang.merk FROM GudangBarang gb WHERE gb.barang.sku = :barangSku")
+    String findBarangMerk(@Param("barangSku") String barangSku);
 }
+
