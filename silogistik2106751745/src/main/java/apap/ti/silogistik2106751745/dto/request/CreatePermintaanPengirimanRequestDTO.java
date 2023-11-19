@@ -2,6 +2,7 @@ package apap.ti.silogistik2106751745.dto.request;
 
 import apap.ti.silogistik2106751745.model.Karyawan;
 import apap.ti.silogistik2106751745.model.PermintaanPengirimanBarang;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +29,7 @@ public class CreatePermintaanPengirimanRequestDTO {
     private String alamatPenerima;
 
     @NotNull(message = "Tanggal pengiriman tidak boleh kosong!")
+    @Future(message = "Tanggal pengiriman hanya bisa H+1 dari waktu permintaan!")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date tanggalPengiriman;
 
